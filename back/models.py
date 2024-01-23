@@ -16,3 +16,10 @@ class Mes(models.Model):
 
     def __str__(self):
         return {self.nombre}
+    
+
+class Gasto(models.Model):
+    mes = models.ForeignKey(Mes, on_delete=models.CASCADE)
+    nombre = models.CharField(max_length=20, null=True)
+    descripcion = models.TextField(max_length=100)
+    cantidad = models.DecimalField(max_digits=10, decimal_places=2)

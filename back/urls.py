@@ -8,4 +8,5 @@ router.register(r'meses', TaskView, 'meses')
 urlpatterns = [
     path('api/v1/', include(router.urls)),
     path('api/guardar_datos/', RegistroFinanzasView.as_view(), name='guardar_datos'),
+    path('api/guardar_gastos/', RegistroGastosView.as_view(), name='guardar_gastos'),
 ]

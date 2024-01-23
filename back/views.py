@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, viewsets
-from .models import Mes
+from .models import Mes, Gasto
 from .serializer import MesSerializer
 
 class RegistroFinanzasView(APIView):
@@ -23,6 +23,22 @@ class RegistroFinanzasView(APIView):
         )
 
         return Response({'message': 'Datos guardados correctamente'}, status=status.HTTP_201_CREATED)
+
+
+class RegistroGastosView(APIView):
+    def post(self, request, *args, **kwargs):
+        data = request.data
+
+        registro_gastos = Gasto.objects.create(
+            mes = data['mes'],
+            nombre = data['nombre'],
+            descripcion = data['descripcion'],
+            cantidad = data['cantidad'],
+        )
+
+        return Response({'message': 'Datos guardados correctamente'}, status=status.HTTP_201_CREATED)
+
+
 
 class ActualizarMesView(APIView):
     def put(self, request, pk, *args, **kwargs):
