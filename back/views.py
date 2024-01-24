@@ -2,13 +2,15 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, viewsets
 from .models import Mes, Gasto
-from .serializer import MesSerializer
+from .serializer import MesSerializer, GastoSerializer
 
 class RegistroFinanzasView(APIView):
     def post(self, request, *args, **kwargs):
         data = request.data
 
-        registro_finanzas = Mes.objects.create(
+        try:
+
+            registro_finanzas = Mes.objects.create(
             sueldo_total=data['sueldoTotal'],
             resultado=data['resultado'],
             gasto_gas=data['gas'],
@@ -20,23 +22,32 @@ class RegistroFinanzasView(APIView):
             expensas=data['expensas'],
             alquiler=data['alquiler'],
             wifi=data['wifi']
-        )
+            )
+            return Response({'message': 'Datos guardados correctamente'}, status=status.HTTP_201_CREATED)
+        
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        return Response({'message': 'Datos guardados correctamente'}, status=status.HTTP_201_CREATED)
 
 
 class RegistroGastosView(APIView):
     def post(self, request, *args, **kwargs):
         data = request.data
+        try:
+            mes_id = data.get('mes', None)
+            if mes_id is not None:
+                mes = Mes.objects.get(pk=mes_id)
+                data['mes'] = mes
+            registro_gastos = Gasto.objects.create(
+                mes = data['mes'],
+                nombre = data['nombre'],
+                descripcion = data['descripcion'],
+                cantidad = data['cantidad'],
+            )
+            return Response({'message': 'Datos guardados correctamente'}, status=status.HTTP_201_CREATED)
 
-        registro_gastos = Gasto.objects.create(
-            mes = data['mes'],
-            nombre = data['nombre'],
-            descripcion = data['descripcion'],
-            cantidad = data['cantidad'],
-        )
-
-        return Response({'message': 'Datos guardados correctamente'}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
@@ -55,3 +66,7 @@ class ActualizarMesView(APIView):
 class TaskView(viewsets.ModelViewSet):
     serializer_class = MesSerializer
     queryset = Mes.objects.all()
+
+class GastoView(viewsets.ModelViewSet):
+    serializer_class = GastoSerializer
+    queryset = Gasto.objects.all()

@@ -4,6 +4,7 @@ from rest_framework import routers
 
 router = routers.DefaultRouter()
 router.register(r'meses', TaskView, 'meses')
+router.register(r'gastos', GastoView, 'gastos')
 
 urlpatterns = [
     path('api/v1/', include(router.urls)),
