@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-i1ws!an4=g)=w+t3uykos*cw15=za%lsyuz0si7h5@o5i=8opb
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['.vercel.app']
 
 
 # Application definition
@@ -55,7 +55,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
+    "https://gestor-de-gastos.pages.dev",
 ]
 
 ROOT_URLCONF = 'gestion_api.urls'
@@ -84,8 +84,12 @@ WSGI_APPLICATION = 'gestion_api.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'blhxbsdfdpwwotaucuuz',
+        'USER': 'uwsbtwwudwfinla4',
+        'PASSWORD': 'bWCVPeAAdnj10WFhwmAs',
+        'HOST': 'blhxbsdfdpwwotaucuuz-mysql.services.clever-cloud.com',
+        'PORT': '3306'
     }
 }
 

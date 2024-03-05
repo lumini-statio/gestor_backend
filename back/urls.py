@@ -7,7 +7,7 @@ router.register(r'meses', TaskView, 'meses')
 router.register(r'gastos', GastoView, 'gastos')
 
 urlpatterns = [
-    path('api/v1/', include(router.urls)),
-    path('api/guardar_datos/', RegistroFinanzasView.as_view(), name='guardar_datos'),
-    path('api/guardar_gastos/', RegistroGastosView.as_view(), name='guardar_gastos'),
+    path('/', include(router.urls)),
+    path('/guardar_datos/', RegistroFinanzasView.as_view(), name='guardar_datos'),
+    path('/guardar_gastos/', RegistroGastosView.as_view(), name='guardar_gastos'),
 ]
