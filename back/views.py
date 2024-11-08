@@ -1,13 +1,39 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, viewsets
-from rest_framework import generics, permissions
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.authtoken.models import Token
 from .models import Mes, Gasto
 from .serializers import MesSerializer, GastoSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import AllowAny
+from .serializers import UserSerializer
+from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
 
+class RegisterView(APIView):
+    permission_classes = [AllowAny]
 
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            user.set_password(serializer.data['password'])
+            user.save()
+
+            # Generar JWT para el nuevo usuario
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'user': serializer.data
+            }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class LoginView(TokenObtainPairView):
+    permission_classes = [AllowAny]
 
 class RegistroFinanzasView(APIView):
     def post(self, request, *args, **kwargs):
@@ -53,8 +79,6 @@ class RegistroGastosView(APIView):
 
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
 
 class ActualizarMesView(APIView):
     def put(self, request, pk, *args, **kwargs):
