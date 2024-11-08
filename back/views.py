@@ -1,17 +1,14 @@
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, viewsets
+from rest_framework.decorators import permission_classes
 from .models import Mes, Gasto
-from .serializers import MesSerializer, GastoSerializer
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.permissions import AllowAny
-from .serializers import UserSerializer
+from .serializers import MesSerializer, GastoSerializer, UserSerializer
 from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404
 
 class RegisterView(APIView):
     permission_classes = [AllowAny]
@@ -36,6 +33,7 @@ class LoginView(TokenObtainPairView):
     permission_classes = [AllowAny]
 
 class RegistroFinanzasView(APIView):
+    permission_classes = [TokenAuthentication]
     def post(self, request, *args, **kwargs):
         data = request.data
 
@@ -59,9 +57,8 @@ class RegistroFinanzasView(APIView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
-
 class RegistroGastosView(APIView):
+    permission_classes = [TokenAuthentication]
     def post(self, request, *args, **kwargs):
         data = request.data
         try:
@@ -81,6 +78,7 @@ class RegistroGastosView(APIView):
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class ActualizarMesView(APIView):
+    permission_classes = [TokenAuthentication]
     def put(self, request, pk, *args, **kwargs):
         try:
             mes = Mes.objects.get(pk=pk)
@@ -93,9 +91,11 @@ class ActualizarMesView(APIView):
             return Response({'message': 'El mes no existe'}, status=status.HTTP_404_NOT_FOUND)
 
 class TaskView(viewsets.ModelViewSet):
+    permission_classes = [TokenAuthentication]
     serializer_class = MesSerializer
     queryset = Mes.objects.all()
 
 class GastoView(viewsets.ModelViewSet):
+    permission_classes = [TokenAuthentication]
     serializer_class = GastoSerializer
     queryset = Gasto.objects.all()
