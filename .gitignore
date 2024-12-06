@@ -3,4 +3,4 @@ __pychache__/
 env/
 public/
 .idea/
-gestion_api/settings.py
+.settings.py
